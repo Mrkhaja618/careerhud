@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerHub | Placement Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary:#6657e8;
+  --primary-dark:#5041ca;
+  --bg:#f5f6fb;
+  --surface:#fff;
+  --text:#20213a;
+  --muted:#85869a;
+  --border:#ececf3;
+  --sidebar:#191a30;
+  --green:#159b70;
+  --orange:#e69b38;
+  --red:#df5c69;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+ width:245px;background:var(--sidebar);color:white;padding:27px 17px;
+ position:fixed;inset:0 auto 0 0;z-index:10;display:flex;flex-direction:column;
+}
+.brand{font-size:23px;font-weight:800;padding:5px 13px 35px}
+.brand span{color:#a99fff}
+.nav-label{font-size:10px;color:#8889a4;letter-spacing:1.5px;padding:12px 13px}
+.nav-btn{
+ width:100%;border:0;background:transparent;color:#b9bad0;padding:13px;
+ display:flex;gap:12px;align-items:center;text-align:left;border-radius:9px;
+ margin:3px 0;font-size:13px;font-weight:600;
+}
+.nav-btn:hover,.nav-btn.active{background:#34334f;color:white}
+.nav-btn.active{box-shadow:inset 3px 0 #a99fff}
+.sidebar-bottom{margin-top:auto;padding:15px 12px;color:#aeb0c5;font-size:11px;line-height:1.8}
+.main{margin-left:245px;width:calc(100% - 245px);min-height:100vh}
+.topbar{
+ height:75px;background:white;border-bottom:1px solid var(--border);
+ display:flex;align-items:center;justify-content:space-between;padding:0 35px;
+ position:sticky;top:0;z-index:5;
+}
+.topbar h3{font-size:16px}
+.top-right{display:flex;align-items:center;gap:17px}
+.avatar{width:37px;height:37px;border-radius:50%;background:#eae7ff;color:var(--primary);
+ display:grid;place-items:center;font-weight:800}
+.content{padding:32px 35px;max-width:1500px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.eyebrow{font-size:11px;color:var(--primary);font-weight:800;letter-spacing:1.5px}
+h1{font-size:27px;letter-spacing:-.8px;margin:9px 0}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+.welcome{
+ background:linear-gradient(115deg,#29264e,#6255dc);color:white;padding:30px;
+ border-radius:17px;display:flex;justify-content:space-between;align-items:center;
+ gap:20px;margin-bottom:25px;overflow:hidden;
+}
+.welcome h1{font-size:27px}
+.welcome p{color:#dddafa;font-size:13px;line-height:1.7;max-width:510px}
+.welcome .btn{background:white;color:#5145c9}
+.welcome-art{font-size:65px;opacity:.85;padding:0 25px}
+.btn{
+ border:0;border-radius:8px;padding:11px 16px;background:var(--primary);
+ color:white;font-weight:700;font-size:12px;display:inline-block;
+}
+.btn:hover{background:var(--primary-dark)}
+.btn.light{background:#efedff;color:var(--primary)}
+.btn.dark{background:#25253c}
+.btn.outline{background:white;border:1px solid var(--border);color:var(--text)}
+.btn.danger{background:#fff0f1;color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:17px;margin:22px 0}
+.stat,.panel,.job-card,.profile-card{
+ background:white;border:1px solid var(--border);border-radius:13px;padding:20px;
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{width:39px;height:39px;border-radius:10px;background:#efedff;
+ display:grid;place-items:center;font-size:18px}
+.stat h2{font-size:25px;margin:17px 0 5px}
+.stat p{font-size:11px;color:var(--muted)}
+.stat small{color:var(--green);font-size:11px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 15px}
+.section-head h2{font-size:17px}
+.section-head p{font-size:11px;color:var(--muted);margin-top:5px}
+.grid-2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.panel h3{font-size:14px;margin-bottom:16px}
+.activity{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.activity:last-child{border:0}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--primary);margin-top:4px}
+.activity strong{font-size:12px}
+.activity p{font-size:11px;color:var(--muted);margin-top:5px}
+.progress-row{margin:18px 0}
+.progress-row div:first-child{display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px}
+.progress{height:7px;border-radius:9px;background:#eeeef5;overflow:hidden}
+.progress span{height:100%;display:block;background:var(--primary);border-radius:9px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+.field{
+ background:white;border:1px solid var(--border);border-radius:8px;
+ padding:12px 13px;font-size:12px;outline:none;color:var(--text);
+}
+.field:focus{border-color:var(--primary)}
+.toolbar .field{flex:1;min-width:170px}
+.job-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.job-card{transition:.2s}
+.job-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px #28204a12}
+.company-icon{width:43px;height:43px;border-radius:11px;background:#efedff;
+ color:var(--primary);display:grid;place-items:center;font-weight:800;margin-bottom:16px}
+.job-card h3{font-size:14px;margin-bottom:6px}
+.company{font-size:11px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
+.tag{padding:6px 8px;border-radius:5px;background:#f2f1ff;color:#6657d5;font-size:10px;font-weight:600}
+.job-foot{border-top:1px solid var(--border);padding-top:13px;display:flex;justify-content:space-between;align-items:center}
+.job-foot span{font-size:10px;color:var(--muted)}
+.badge{display:inline-block;border-radius:20px;padding:6px 9px;font-size:10px;font-weight:700;background:#e7f7f0;color:var(--green)}
+.badge.pending{background:#fff4df;color:#bd8127}
+.badge.review{background:#eeedff;color:var(--primary)}
+.badge.rejected{background:#fff0f1;color:var(--red)}
+.table-wrap{overflow:auto;background:white;border:1px solid var(--border);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:16px;border-bottom:1px solid var(--border);font-size:11px}
+th{color:var(--muted);font-weight:600;background:#fafaff}
+td{color:#44445b}
+.empty{text-align:center;padding:35px;color:var(--muted);font-size:12px}
+.profile-layout{display:grid;grid-template-columns:1fr 2fr;gap:18px}
+.profile-card{text-align:center}
+.profile-big{width:75px;height:75px;border-radius:50%;background:#eae7ff;color:var(--primary);
+ display:grid;place-items:center;font-size:25px;font-weight:800;margin:5px auto 15px}
+.profile-card h2{font-size:17px}
+.profile-card p{font-size:11px;color:var(--muted);margin:7px 0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.form-group label{font-size:11px;font-weight:700}
+.form-group input,.form-group textarea,.form-group select{
+ width:100%;border:1px solid var(--border);padding:12px;border-radius:8px;font-size:12px;outline:none;
+}
+.form-group textarea{min-height:85px;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--primary)}
+.modal{display:none;position:fixed;inset:0;background:#14142699;z-index:30;
+ align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.modal-box{background:white;border-radius:15px;padding:25px;width:100%;max-width:490px;max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-head h2{font-size:18px}
+.close{border:0;background:#f1f1f7;border-radius:50%;width:30px;height:30px;font-size:18px}
+.toast{position:fixed;bottom:22px;right:22px;background:#22223b;color:white;
+ padding:13px 18px;border-radius:9px;font-size:12px;display:none;z-index:50}
+.toast.show{display:block}
+.login-screen{position:fixed;inset:0;background:linear-gradient(130deg,#201d40,#6657e8);
+ z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+.login-screen.show{display:flex}
+.login-box{background:white;padding:30px;border-radius:17px;width:100%;max-width:390px}
+.login-box h2{font-size:23px;margin:10px 0}
+.login-box p{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.login-box input{width:100%;padding:13px;border:1px solid var(--border);border-radius:8px;margin:7px 0}
+.login-box .btn{width:100%;margin-top:10px}
+.menu-toggle{display:none;border:0;background:#f0efff;padding:9px;border-radius:7px}
+@media(max-width:1050px){
+ .sidebar{width:210px}.main{margin-left:210px;width:calc(100% - 210px)}
+ .stats{grid-template-columns:repeat(2,1fr)}.job-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+ .sidebar{transform:translateX(-100%);transition:.25s;width:245px}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0;width:100%}
+ .topbar{padding:0 17px}.content{padding:22px 16px}
+ .menu-toggle{display:block}.topbar h3{font-size:14px}
+ .welcome{padding:23px}.welcome-art{display:none}
+ .stats{gap:10px}.stat{padding:14px}.stat h2{font-size:21px}
+ .job-grid,.grid-2,.profile-layout{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+}
+@media(max-width:390px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand">Career<span>Hub.</span></div>
+ <div class="nav-label">MAIN MENU</div>
+ <button class="nav-btn active" data-page="dashboard">▦ Dashboard</button>
+ <button class="nav-btn" data-page="internships">⌕ Explore Internships</button>
+ <button class="nav-btn" data-page="applications">▤ My Applications</button>
+ <div class="nav-label">ACCOUNT</div>
+ <button class="nav-btn" data-page="profile">♙ My Profile</button>
+ <button class="nav-btn" data-page="admin">⚙️ Admin Dashboard</button>
+ <div class="sidebar-bottom">
+  <b>CareerHub Portal</b><br>
+  Student Placement & Internship Platform<br>
+  <span>Demo Version · 2026</span>
+ </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:13px">
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  <h3 id="pageTitle">Dashboard</h3>
+ </div>
+ <div class="top-right">
+  <span style="font-size:11px;color:var(--muted)" id="topName">Welcome, Student</span>
+  <div class="avatar" id="topAvatar">S</div>
+ </div>
+</header>
+
+<div class="content">
+
+<section class="page active" id="dashboard">
+ <div class="welcome">
+  <div>
+   <div class="eyebrow" style="color:#c5beff">STUDENT CAREER PORTAL</div>
+   <h1>Welcome back, <span id="welcomeName">Student</span>!</h1>
+   <p>Discover opportunities, build your skills and take the next step towards your dream career.</p>
+   <button class="btn" onclick="showPage('internships')">Explore Opportunities →</button>
+  </div>
+  <div class="welcome-art">✦</div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-top"><span class="subtitle">Available Jobs</span><div class="stat-icon">▣</div></div><h2 id="jobCount">4</h2><p>Demo opportunities</p></div>
+  <div class="stat"><div class="stat-top"><span class="subtitle">Applications</span><div class="stat-icon">▤</div></div><h2 id="applicationCount">0</h2><p>Your submitted applications</p></div>
+  <div class="stat"><div class="stat-top"><span class="subtitle">Profile Status</span><div class="stat-icon">♙</div></div><h2>60%</h2><p>Complete your profile</p></div>
+  <div class="stat"><div class="stat-top"><span class="subtitle">Career Growth</span><div class="stat-icon">↗️</div></div><h2>Start</h2><p>Your journey begins here</p></div>
+ </div>
+
+ <div class="grid-2">
+  <div class="panel">
+   <h3>Recent Activity</h3>
+   <div id="recentActivity"><div class="activity"><div class="dot"></div><div><strong>Welcome to CareerHub</strong><p>Explore internships and submit a demo application.</p></div></div></div>
+  </div>
+  <div class="panel">
+   <h3>Profile Completion</h3>
+   <div class="progress-row"><div><span>Personal Details</span><b>80%</b></div><div class="progress"><span style="width:80%"></span></div></div>
+   <div class="progress-row"><div><span>Education</span><b>60%</b></div><div class="progress"><span style="width:60%"></span></div></div>
+   <div class="progress-row"><div><span>Skills</span><b>40%</b></div><div class="progress"><span style="width:40%"></span></div></div>
+   <button class="btn light" onclick="showPage('profile')">Complete Profile</button>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="internships">
+ <div class="eyebrow">CAREER OPPORTUNITIES</div>
+ <h1>Explore Internships</h1>
+ <p class="subtitle">Discover opportunities that match your interests and skills.</p>
+ <div class="toolbar">
+  <input class="field" id="search" placeholder="Search role or skill..." oninput="renderJobs()">
+  <select class="field" id="category" onchange="renderJobs()">
+   <option value="All">All Categories</option>
+   <option>Web Development</option><option>Artificial Intelligence</option>
+   <option>UI/UX Design</option><option>Data Science</option>
+  </select>
+  <select class="field" id="mode" onchange="renderJobs()">
+   <option value="All">All Work Modes</option><option>Remote</option><option>Hybrid</option><option>On-site</option>
+  </select>
+ </div>
+ <div class="job-grid" id="jobGrid"></div>
+</section>
+
+<section class="page" id="applications">
+ <div class="eyebrow">APPLICATION CENTER</div>
+ <h1>My Applications</h1>
+ <p class="subtitle">Track the status of the opportunities you have applied for.</p>
+ <div class="section-head"><h2>Application History</h2><span class="badge">Demo Tracking</span></div>
+ <div class="table-wrap">
+  <table><thead><tr><th>POSITION</th><th>CATEGORY</th><th>APPLIED ON</th><th>STATUS</th></tr></thead>
+  <tbody id="applicationRows"></tbody></table>
+ </div>
+</section>
+
+<section class="page" id="profile">
+ <div class="eyebrow">YOUR ACCOUNT</div>
+ <h1>Student Profile</h1>
+ <p class="subtitle">Manage your personal and academic information.</p>
+ <div class="profile-layout" style="margin-top:22px">
+  <div class="profile-card">
+   <div class="profile-big" id="profileInitial">S</div>
+   <h2 id="profileDisplayName">Student Name</h2>
+   <p id="profileDisplayEmail">student@example.com</p>
+   <span class="badge">Student Account</span>
+  </div>
+  <div class="panel">
+   <h3>Personal Information</h3>
+   <form id="profileForm">
+    <div class="form-grid">
+     <div class="form-group"><label>Full Name</label><input id="fullName" required placeholder="Enter your name"></div>
+     <div class="form-group"><label>Email Address</label><input id="email" type="email" required placeholder="Enter email"></div>
+     <div class="form-group"><label>College</label><input id="college" placeholder="College name"></div>
+     <div class="form-group"><label>Course</label><input id="course" placeholder="Your course"></div>
+     <div class="form-group"><label>Current Year</label><select id="year"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div>
+     <div class="form-group"><label>Skills</label><input id="skills" placeholder="HTML, CSS, etc."></div>
+    </div>
+    <button class="btn">Save Profile</button>
+   </form>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="admin">
+ <div class="eyebrow">MANAGEMENT OVERVIEW</div>
+ <h1>Admin Dashboard</h1>
+ <p class="subtitle">Overview of demo opportunities and student applications.</p>
+ <div class="stats">
+  <div class="stat"><p>Total Opportunities</p><h2 id="adminJobs">4</h2><small>Demo listings</small></div>
+  <div class="stat"><p>Total Applications</p><h2 id="adminApps">0</h2><small>Stored in this browser</small></div>
+  <div class="stat"><p>Pending Review</p><h2 id="adminPending">0</h2><small>Demo status</small></div>
+  <div class="stat"><p>Portal Status</p><h2>Active</h2><small>Frontend prototype</small></div>
+ </div>
+ <div class="panel">
+  <div class="section-head"><h2>Manage Opportunities</h2><button class="btn" onclick="openJobForm()">+ Add Opportunity</button></div>
+  <div id="adminJobList"></div>
+ </div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div class="modal" id="detailModal">
+ <div class="modal-box">
+  <div class="modal-head"><h2 id="detailTitle">Opportunity Details</h2><button class="close" onclick="closeModal('detailModal')">×</button></div>
+  <div id="detailContent"></div>
+ </div>
+</div>
+
+<div class="modal" id="applyModal">
+ <div class="modal-box">
+  <div class="modal-head"><h2>Apply for Opportunity</h2><button class="close" onclick="closeModal('applyModal')">×</button></div>
+  <form id="applyForm">
+   <input type="hidden" id="applyJobId">
+   <div class="form-group"><label>Full Name</label><input id="applyName" required></div>
+   <div class="form-group"><label>Email</label><input id="applyEmail" type="email" required></div>
+   <div class="form-group"><label>College</label><input id="applyCollege" required></div>
+   <div class="form-group"><label>Why are you interested?</label><textarea id="applyReason" required></textarea></div>
+   <button class="btn">Submit Demo Application</button>
+  </form>
+ </div>
+</div>
+
+<div class="modal" id="jobModal">
+ <div class="modal-box">
+  <div class="modal-head"><h2>Add Opportunity</h2><button class="close" onclick="closeModal('jobModal')">×</button></div>
+  <form id="jobForm">
+   <div class="form-group"><label>Job Title</label><input id="newTitle" required></div>
+   <div class="form-group"><label>Company / Organization</label><input id="newCompany" required></div>
+   <div class="form-group"><label>Category</label><select id="newCategory"><option>Web Development</option><option>Artificial Intelligence</option><option>UI/UX Design</option><option>Data Science</option></select></div>
+   <div class="form-group"><label>Work Mode</label><select id="newMode"><option>Remote</option><option>Hybrid</option><option>On-site</option></select></div>
+   <div class="form-group"><label>Duration</label><input id="newDuration" placeholder="3 Months" required></div>
+   <div class="form-group"><label>Description</label><textarea id="newDescription" required></textarea></div>
+   <button class="btn">Add Listing</button>
+  </form>
+ </div>
+</div>
+
+<div class="login-screen" id="loginScreen">
+ <div class="login-box">
+  <div class="brand" style="padding:0;color:var(--primary)">CareerHub.</div>
+  <h2>Welcome to CareerHub</h2>
+  <p>Enter your details to access this local student portal demo.</p>
+  <form id="loginForm">
+   <input id="loginName" placeholder="Your full name" required>
+   <input id="loginEmail" type="email" placeholder="Email address" required>
+   <button class="btn">Continue to Dashboard</button>
+  </form>
+  <p style="margin:15px 0 0">Demo login only. No password or secure account is created.</p>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const defaultJobs = [
+ {id:1,title:"Frontend Developer Intern",company:"Demo Tech Studio",category:"Web Development",mode:"Remote",duration:"3 Months",level:"Beginner",description:"Work on responsive user interfaces and learn modern frontend development."},
+ {id:2,title:"AI / ML Intern",company:"Demo Innovation Lab",category:"Artificial Intelligence",mode:"Hybrid",duration:"2 Months",level:"Beginner",description:"Explore machine learning concepts and assist with learning-focused AI projects."},
+ {id:3,title:"UI/UX Design Intern",company:"Demo Creative Studio",category:"UI/UX Design",mode:"Remote",duration:"3 Months",level:"Beginner",description:"Learn user research, wireframing and interface design fundamentals."},
+ {id:4,title:"Data Science Intern",company:"Demo Analytics Group",category:"Data Science",mode:"On-site",duration:"4 Months",level:"Intermediate",description:"Practice data cleaning, analysis and basic visualization."}
+];
+
+let jobs = JSON.parse(localStorage.getItem("ch_jobs") || "null") || defaultJobs;
+let applications = JSON.parse(localStorage.getItem("ch_apps") || "[]");
+let user = JSON.parse(localStorage.getItem("ch_user") || "null") || {
+ name:"Student",email:"",college:"",course:"",year:"3rd Year",skills:""
+};
+
+function saveData(){
+ localStorage.setItem("ch_jobs",JSON.stringify(jobs));
+ localStorage.setItem("ch_apps",JSON.stringify(applications));
+ localStorage.setItem("ch_user",JSON.stringify(user));
+}
+function toast(message){
+ const t=document.getElementById("toast");
+ t.textContent=message;t.classList.add("show");
+ setTimeout(()=>t.classList.remove("show"),2500);
+}
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("open")}
+function showPage(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(page).classList.add("active");
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const titles={dashboard:"Dashboard",internships:"Explore Internships",applications:"My Applications",profile:"My Profile",admin:"Admin Dashboard"};
+ document.getElementById("pageTitle").textContent=titles[page];
+ document.getElementById("sidebar").classList.remove("open");
+ if(page==="applications")renderApplications();
+ if(page==="admin")renderAdmin();
+ if(page==="profile")loadProfile();
+}
+document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
+
+function renderJobs(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const cat=document.getElementById("category").value;
+ const mode=document.getElementById("mode").value;
+ const filtered=jobs.filter(j=>(j.title+" "+j.company+" "+j.category).toLowerCase().includes(q)
+ &&(cat==="All"||j.category===cat)&&(mode==="All"||j.mode===mode));
+ const grid=document.getElementById("jobGrid");
+ grid.innerHTML=filtered.length?filtered.map(j=>`
+ <article class="job-card">
+  <div class="company-icon">${j.company.charAt(0).toUpperCase()}</div>
+  <h3>${safe(j.title)}</h3><p class="company">${safe(j.company)}</p>
+  <div class="tags"><span class="tag">${safe(j.category)}</span><span class="tag">${safe(j.mode)}</span><span class="tag">${safe(j.duration)}</span></div>
+  <div class="job-foot"><span>${safe(j.level||"Beginner")} · Demo listing</span><button class="btn light" onclick="showDetails(${j.id})">View Details</button></div>
+ </article>`).join(""):'<div class="empty">No matching opportunities found.</div>';
+ document.getElementById("jobCount").textContent=jobs.length;
+}
+function safe(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function showDetails(id){
+ const j=jobs.find(x=>x.id===id);if(!j)return;
+ document.getElementById("detailTitle").textContent=j.title;
+ document.getElementById("detailContent").innerHTML=`
+ <p class="company">${safe(j.company)}</p>
+ <div class="tags"><span class="tag">${safe(j.category)}</span><span class="tag">${safe(j.mode)}</span><span class="tag">${safe(j.duration)}</span></div>
+ <p class="subtitle" style="margin:18px 0">${safe(j.description)}</p>
+ <p class="subtitle">Level: ${safe(j.level||"Beginner")}</p>
+ <button class="btn" style="margin-top:20px" onclick="openApply(${j.id})">Apply Now</button>`;
+ document.getElementById("detailModal").classList.add("show");
+}
+function openApply(id){
+ closeModal("detailModal");
+ document.getElementById("applyJobId").value=id;
+ document.getElementById("applyName").value=user.name||"";
+ document.getElementById("applyEmail").value=user.email||"";
+ document.getElementById("applyCollege").value=user.college||"";
+ document.getElementById("applyModal").classList.add("show");
+}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+document.getElementById("applyForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const id=Number(document.getElementById("applyJobId").value);
+ const job=jobs.find(j=>j.id===id);if(!job)return;
+ applications.push({id:Date.now(),jobId:id,title:job.title,category:job.category,date:new Date().toLocaleDateString(),status:"Submitted"});
+ saveData();closeModal("applyModal");e.target.reset();refresh();
+ toast("Demo application saved in this browser.");
+});
+function renderApplications(){
+ const rows=document.getElementById("applicationRows");
+ rows.innerHTML=applications.length?applications.map(a=>`
+ <tr><td><b>${safe(a.title)}</b></td><td>${safe(a.category)}</td><td>${safe(a.date)}</td><td><span class="badge pending">${safe(a.status)}</span></td></tr>`).join(""):'<tr><td colspan="4" class="empty">You have not submitted any applications yet.</td></tr>';
+}
+function loadProfile(){
+ document.getElementById("fullName").value=user.name||"";
+ document.getElementById("email").value=user.email||"";
+ document.getElementById("college").value=user.college||"";
+ document.getElementById("course").value=user.course||"";
+ document.getElementById("year").value=user.year||"3rd Year";
+ document.getElementById("skills").value=user.skills||"";
+}
+document.getElementById("profileForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ user={...user,name:fullName.value,email:email.value,college:college.value,course:course.value,year:year.value,skills:skills.value};
+ saveData();refresh();toast("Profile saved successfully.");
+});
+function renderAdmin(){
+ document.getElementById("adminJobs").textContent=jobs.length;
+ document.getElementById("adminApps").textContent=applications.length;
+ document.getElementById("adminPending").textContent=applications.length;
+ document.getElementById("adminJobList").innerHTML=jobs.map(j=>`
+ <div class="activity"><div class="dot"></div><div style="flex:1"><strong>${safe(j.title)}</strong><p>${safe(j.company)} · ${safe(j.category)}</p></div><button class="btn danger" onclick="deleteJob(${j.id})">Delete</button></div>`).join("");
+}
+function deleteJob(id){
+ jobs=jobs.filter(j=>j.id!==id);saveData();renderAdmin();renderJobs();toast("Demo listing removed.");
+}
+function openJobForm(){document.getElementById("jobModal").classList.add("show")}
+document.getElementById("jobForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ jobs.push({id:Date.now(),title:newTitle.value,company:newCompany.value,category:newCategory.value,mode:newMode.value,duration:newDuration.value,level:"Beginner",description:newDescription.value});
+ saveData();closeModal("jobModal");e.target.reset();renderAdmin();renderJobs();toast("Demo opportunity added.");
+});
+function refresh(){
+ document.getElementById("welcomeName").textContent=user.name||"Student";
+ document.getElementById("topName").textContent="Welcome, "+(user.name||"Student");
+ document.getElementById("topAvatar").textContent=(user.name||"S").charAt(0).toUpperCase();
+ document.getElementById("profileInitial").textContent=(user.name||"S").charAt(0).toUpperCase();
+ document.getElementById("profileDisplayName").textContent=user.name||"Student";
+ document.getElementById("profileDisplayEmail").textContent=user.email||"Add your email";
+ document.getElementById("applicationCount").textContent=applications.length;
+ document.getElementById("adminApps").textContent=applications.length;
+}
+document.getElementById("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();user.name=loginName.value;user.email=loginEmail.value;
+ saveData();document.getElementById("loginScreen").classList.remove("show");refresh();toast("Welcome to CareerHub!");
+});
+if(!user.email){document.getElementById("loginScreen").classList.add("show")}
+jobs=jobs.length?jobs:defaultJobs;
+renderJobs();refresh();renderApplications();
+</script>
+</body>
+</html>
